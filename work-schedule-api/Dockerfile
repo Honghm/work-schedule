@@ -3,24 +3,27 @@ FROM node:17-alpine
 # Create app directory
 WORKDIR /app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-
 COPY package*.json ./
 
 RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
+
+RUN npm install -g pm2
 
 # Bundle app source
 COPY . .
 
 EXPOSE 8080
 
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+RUN chown -R appuser:appgroup /app
+
+# Tell docker that all future commands should run as the appuser user
+USER appuser
+
 # Development
-CMD ["npm", "run", "dev"]
+# CMD ["npm", "run", "start"]
 
 # Production
 # RUN npm install -g pm2
-# CMD ["pm2-runtime", "ecosystem.config.js", "--env", "production"]
+CMD ["pm2-runtime", "ecosystem.config.js", "--env", "production"]

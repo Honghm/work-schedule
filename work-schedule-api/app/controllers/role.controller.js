@@ -1,12 +1,12 @@
-
 var RoleService = require("../services/role.service");
 
 module.exports = {
   createRole: createRole,
   getRoles: getRoles,
+  getRoleById: getRoleById,
 };
 
-async function getRoles(req, res) {
+async function getRoles(res) {
   try {
     const roles = await RoleService.getRoles();
     if (roles) {
@@ -20,7 +20,20 @@ async function getRoles(req, res) {
     res.status(400);
   }
 }
-
+async function getRoleById(id, res) {
+  var role = await RoleService.getRoleById(id);
+  if (role) {
+    res.status(200).json({
+      data: {
+        id: role.id,
+        name: role.name,
+        created_at: role.created_at,
+      },
+    });
+  } else {
+    res.status(400);
+  }
+}
 async function createRole(newRole, req, res) {
   try {
     const result = await RoleService.createRole(newRole);

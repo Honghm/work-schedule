@@ -1,6 +1,5 @@
 var express = require("express");
 
-var userRouter = require("./user.router");
 var loginRouter = require("./auth.router");
 var accountRouters = require("./account.router");
 var roleRouters = require("./role.router");
@@ -9,7 +8,6 @@ var bookingRouters = require("./booking.router");
 
 const apiRoute = express();
 
-apiRoute.use("/user", userRouter);
 apiRoute.use("/login", loginRouter);
 apiRoute.use("/account", accountRouters);
 apiRoute.use("/role", roleRouters);

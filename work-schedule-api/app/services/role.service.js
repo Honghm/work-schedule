@@ -4,6 +4,9 @@ async function getRoles() {
   return await RoleModel.find();
 }
 
+async function getRoleById(id) {
+  return await RoleModel.findOne({ id: id });
+}
 async function createRole(newRole) {
   var result = 400;
   await RoleModel.find({ id: newRole.id })
@@ -30,4 +33,5 @@ async function createRole(newRole) {
 module.exports = {
   getRoles: getRoles,
   createRole: createRole,
+  getRoleById: getRoleById,
 };

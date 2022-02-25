@@ -1,67 +1,28 @@
 var router = require("express").Router();
-var Account = require("../models/account.model");
-var userController = require("../controllers/user.controller");
+var auth = require("../middle-ware/auth");
 var accountController = require("../controllers/account.controller");
 
 router.post("/create", createAccount);
 router.get("/sendCode", sendCodeToPhoneNumber);
 router.get("/verifyCode", verifyCodePhoneNumber);
+router.get("/", auth.auth(), getInfoUser);
 module.exports = router;
 
 function sendCodeToPhoneNumber(req, res) {
-  accountController.sendCode(req.query.phoneNumber, function (err, result) {
-    if (err) {
-      if (err.statusCode == 404) {
-        res.status(404).send(err);
-      } else if (err.statusCode == 400) {
-        res.status(400).send(err);
-      } else {
-        res.status(409).send(err);
-      }
-    } else {
-      res.status(200).send({
-        message: result,
-      });
-    }
-  });
+  accountController.sendCode(req.query.phoneNumber, res);
 }
 function verifyCodePhoneNumber(req, res) {
-  accountController.verifyCode(
-    req.query.phoneNumber,
-    req.query.code,
-    function (err, result) {
-      if (err) {
-        res.send(err);
-      } else {
-        res.send({
-          message: "Phone number is validated",
-        });
-      }
-    }
-  );
+  accountController.verifyCode(req.query.phoneNumber, req.query.code, res);
 }
-function createAccount(req, res, next) {
+function createAccount(req, res) {
   var result = verifyInputAccount(req.body, (error) => {
     next({
       message: error,
     });
   });
+
   if (result) {
-    var account = new Account(req.body);
-    accountController.createAccount(account, (err, result) => {
-      if (err) {
-        res.send(err);
-      } else {
-        var result = userController.createUser(req.body, account);
-        if (result) {
-          res.json({
-            message: "Successfully created account",
-          });
-        } else {
-          res.send(err);
-        }
-      }
-    });
+    accountController.createAccount(req.body, res);
   }
 }
 
@@ -89,4 +50,19 @@ function verifyInputAccount(account, res) {
   }
 
   return true;
+}
+
+
+
+function getInfoUser(req, res) {
+  var authorizationHeader = req.headers["authorization"];
+  var token = authorizationHeader.split(" ")[1];
+
+  auth.dataToken(token, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      accountController.getInfoUser(data.userId, req, res);
+    }
+  });
 }

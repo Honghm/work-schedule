@@ -4,14 +4,17 @@ var auth = require("../middle-ware/auth");
 var Role = require("../models/role.model");
 
 router.get("/", auth.auth(), getRoles);
+router.get("/:id", auth.auth(), getRoleById);
 router.post("/", auth.auth("Admin"), createRole);
 
 module.exports = router;
 
 function getRoles(req, res) {
-  roleController.getRoles(req, res);
+  roleController.getRoles(res);
 }
-
+function getRoleById(req, res) {
+  roleController.getRoleById(req.params.id, res);
+}
 function createRole(req, res) {
   var role = Role(req.body);
   if (!role.id) {

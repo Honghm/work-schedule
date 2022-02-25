@@ -3,7 +3,6 @@ var morgan = require("morgan");
 var helmet = require("helmet");
 var cors = require("cors");
 const path = require("path");
-var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 var fileUpload = require("express-fileupload");
 var connectDatabase = require("./app/configs/db.config");
@@ -12,7 +11,7 @@ var dotenv = require("dotenv");
 dotenv.config();
 connectDatabase();
 
-const PORT = process.env.PORT || 8888;
+const PORT = process.env.PORT || 8080;
 const rfs = require("rotating-file-stream");
 const isProduction = process.env.NODE_ENV === "production";
 

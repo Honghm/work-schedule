@@ -3,6 +3,7 @@ var DepartmentService = require("../services/department.service");
 module.exports = {
   createDepartment: createDepartment,
   getDepartments: getDepartments,
+  getDepartmentById:getDepartmentById
 };
 
 async function getDepartments(req, res) {
@@ -19,7 +20,20 @@ async function getDepartments(req, res) {
     res.status(400);
   }
 }
-
+async function getDepartmentById(id, res) {
+  var department = await DepartmentService.getDepartmentById(id);
+  if (department) {
+    res.status(200).json({
+      data: {
+        id: department.id,
+        name: department.name,
+        created_at: department.created_at,
+      },
+    });
+  } else {
+    res.status(400);
+  }
+}
 async function createDepartment(newDepartment, req, res) {
   try {
     const result = await DepartmentService.createDepartment(newDepartment);

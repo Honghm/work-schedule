@@ -3,7 +3,9 @@ var DepartmentModel = require("../models/department.model");
 async function getDepartments() {
   return await DepartmentModel.find();
 }
-
+async function getDepartmentById(id) {
+  return await DepartmentModel.findOne({ id: id });
+}
 async function createDepartment(newDepartment) {
   var result = 400;
   await DepartmentModel.find({ id: newDepartment.id })
@@ -32,4 +34,5 @@ async function createDepartment(newDepartment) {
 module.exports = {
   getDepartments: getDepartments,
   createDepartment: createDepartment,
+  getDepartmentById: getDepartmentById,
 };

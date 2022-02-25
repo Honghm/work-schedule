@@ -4,6 +4,7 @@ var auth = require("../middle-ware/auth");
 var Department = require("../models/department.model");
 
 router.get("/", auth.auth(), getDepartments);
+router.get("/:id",auth.auth(), getDepartmentById);
 router.post("/", auth.auth("Admin"), createDepartment);
 
 module.exports = router;
@@ -11,7 +12,9 @@ module.exports = router;
 function getDepartments(req, res, next) {
   departmentController.getDepartments(req, res);
 }
-
+function getDepartmentById(req, res) {
+  departmentController.getDepartmentById(req.params.id, res);
+}
 function createDepartment(req, res, next) {
   var department = new Department(req.body);
 
